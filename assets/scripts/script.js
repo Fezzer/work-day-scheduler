@@ -25,8 +25,13 @@ function setCurrentDay(currentDay) {
 
 // appends a new hour row to the "container" class.
 function appendHourRow(hour, settings) {
-  const row = $("<div>").addClass("row").append(
-    $("<div>").addClass("hour").text(moment(hour, "H").format(settings.getHourFormat()))
+  const row = $("<div>")
+    .addClass("row")
+    .attr("data-hour", hour)
+    .append(
+      $("<div>")
+        .addClass("hour")
+        .text(moment(hour, "H").format(settings.getHourFormat()))
   );
 
   const currentHour = settings.getCurrentHour();
@@ -46,6 +51,20 @@ function appendHourRow(hour, settings) {
   $(".container").append(row);
 }
 
+// Handler for the save button click event.
+function saveButtonClick(event) {
+  const button = $(event.currentTarget);
+  const hour = button.parent().attr("data-hour");
+  const text = button.siblings("textarea").val().trim();
+  
+
+  if (text === "") {
+    localStorage.removeItem("hour" + hour);
+  } else {
+    localStorage.setItem("hour" + hour, text);
+  }
+}
+
 // Application initialisation.
 $(() => {
   const settings = getSettings();
@@ -55,4 +74,6 @@ $(() => {
   for (let hour = settings.hours.start; hour <= settings.hours.end; hour++) {
     appendHourRow(hour, settings);
   }
+
+  $("div.container").on("click", "button", saveButtonClick)
 });
