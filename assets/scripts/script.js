@@ -36,13 +36,15 @@ function appendHourRow(hour, settings) {
 
   const currentHour = settings.getCurrentHour();
   
-  row.append($("<textarea>").addClass(
-    hour < currentHour 
-      ? "past" 
-      : hour > currentHour 
+  row.append($("<textarea>")
+    .addClass(
+      hour < currentHour 
+        ? "past" 
+        : hour > currentHour 
           ? "future" 
-          : "present"
-  ));
+          : "present")
+    .val(localStorage.getItem("hour"+ hour))
+  );
   
   row.append($("<button>").addClass("saveBtn").append(
     $("<i>").addClass("fa-solid fa-floppy-disk")
