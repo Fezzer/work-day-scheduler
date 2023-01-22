@@ -69,6 +69,8 @@ $(document).ready(() => {
     } else {
       localStorage.setItem("hour" + hour, text);
     }
+
+    $(".toast").toast("show");
   }
 
   // Application initialisation.
