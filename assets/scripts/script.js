@@ -8,7 +8,7 @@ function getSettings() {
     dummyHour: 13,
     currentDateFormat: "dddd, Do MMMM YYYY",
 
-    getHourDisplayFormat() { 
+    getHourFormat() { 
       return this.use24Hour ? "H" : "ha";
     },
 
@@ -23,30 +23,36 @@ function setCurrentDay(currentDay) {
   $("#currentDay").text(currentDay);
 }
 
+// appends a new hour row to the "container" class.
+function appendHourRow(hour, settings) {
+  const row = $("<div>").addClass("row").append(
+    $("<div>").addClass("hour").text(moment(hour, "H").format(settings.getHourFormat()))
+  );
+
+  const currentHour = settings.getCurrentHour();
+  
+  row.append($("<textarea>").addClass(
+    hour < currentHour 
+      ? "past" 
+      : hour > currentHour 
+          ? "future" 
+          : "present"
+  ));
+  
+  row.append($("<button>").addClass("saveBtn").append(
+    $("<i>").addClass("fa-solid fa-floppy-disk")
+  ));
+
+  $(".container").append(row);
+}
+
 // Application initialisation.
 $(() => {
   const settings = getSettings();
-  const currentHour = settings.getCurrentHour();
 
   setCurrentDay(moment().format(settings.currentDateFormat));
 
-  for (let i = settings.hours.start; i <= settings.hours.end; i++) {
-    const row = $("<div>").addClass("row").append(
-      $("<div>").addClass("hour").text(moment(i, "H").format(settings.getHourDisplayFormat()))
-    );
-    
-    row.append($("<textarea>").addClass(
-      i < currentHour 
-        ? "past" 
-        : i > currentHour 
-            ? "future" 
-            : "present"
-    ));
-    
-    row.append($("<button>").addClass("saveBtn").append(
-      $("<i>").addClass("fa-solid fa-floppy-disk")
-    ));
-
-    $(".container").append(row);
+  for (let hour = settings.hours.start; hour <= settings.hours.end; hour++) {
+    appendHourRow(hour, settings);
   }
 });
